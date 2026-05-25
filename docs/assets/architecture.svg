@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" font-family="system-ui,-apple-system,sans-serif" font-size="13">
+  <defs>
+    <linearGradient id="obsGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#fbbf24"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="460" rx="12" fill="#0f172a"/>
+  <text x="480" y="28" text-anchor="middle" fill="#94a3b8" font-size="11">MCP OBSERVABILITY — LOGS, METRICS, TRACES, ALERTS, INCIDENTS, SLOs</text>
+
+  <!-- Clients -->
+  <rect x="20" y="120" width="130" height="150" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="85" y="140" text-anchor="middle" fill="#94a3b8" font-size="10">MCP CLIENTS</text>
+  <rect x="30" y="155" width="110" height="20" rx="3" fill="#334155"/>
+  <text x="85" y="169" text-anchor="middle" fill="#f1f5f9" font-size="9">Claude / Kiro</text>
+  <rect x="30" y="180" width="110" height="20" rx="3" fill="#334155"/>
+  <text x="85" y="194" text-anchor="middle" fill="#f1f5f9" font-size="9">Cursor / Codex</text>
+  <rect x="30" y="205" width="110" height="20" rx="3" fill="#334155"/>
+  <text x="85" y="219" text-anchor="middle" fill="#f1f5f9" font-size="9">Windsurf</text>
+
+  <line x1="150" y1="195" x2="195" y2="195" stroke="#6366f1" stroke-width="2"/>
+  <polygon points="195,190 205,195 195,200" fill="#6366f1"/>
+
+  <!-- Server -->
+  <rect x="205" y="45" width="370" height="385" rx="8" fill="url(#obsGrad)" opacity="0.08" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="390" y="67" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="bold">mcp-observability</text>
+  <text x="390" y="83" text-anchor="middle" fill="#64748b" font-size="9">Rust · rmcp 1.7 · 28 tools · Full-stack observability</text>
+
+  <rect x="217" y="95" width="170" height="55" rx="4" fill="#1e293b"/>
+  <text x="302" y="111" text-anchor="middle" fill="#38bdf8" font-size="9">LOGS (4)</text>
+  <text x="302" y="126" text-anchor="middle" fill="#64748b" font-size="8">query · stats · errors · tail</text>
+  <text x="302" y="138" text-anchor="middle" fill="#64748b" font-size="8">filter by service, level, time</text>
+
+  <rect x="393" y="95" width="170" height="55" rx="4" fill="#1e293b"/>
+  <text x="478" y="111" text-anchor="middle" fill="#34d399" font-size="9">METRICS (4)</text>
+  <text x="478" y="126" text-anchor="middle" fill="#64748b" font-size="8">query · list · health · compare</text>
+  <text x="478" y="138" text-anchor="middle" fill="#64748b" font-size="8">CPU, memory, latency, throughput</text>
+
+  <rect x="217" y="158" width="170" height="55" rx="4" fill="#1e293b"/>
+  <text x="302" y="174" text-anchor="middle" fill="#a78bfa" font-size="9">TRACES (4)</text>
+  <text x="302" y="189" text-anchor="middle" fill="#64748b" font-size="8">search · get · service map</text>
+  <text x="302" y="201" text-anchor="middle" fill="#64748b" font-size="8">latency breakdown (p50/p95/p99)</text>
+
+  <rect x="393" y="158" width="170" height="55" rx="4" fill="#1e293b"/>
+  <text x="478" y="174" text-anchor="middle" fill="#f87171" font-size="9">ALERTS (4)</text>
+  <text x="478" y="189" text-anchor="middle" fill="#64748b" font-size="8">list · get · create · acknowledge</text>
+  <text x="478" y="201" text-anchor="middle" fill="#64748b" font-size="8">threshold + anomaly detection</text>
+
+  <rect x="217" y="221" width="170" height="55" rx="4" fill="#1e293b"/>
+  <text x="302" y="237" text-anchor="middle" fill="#fb923c" font-size="9">INCIDENTS (4)</text>
+  <text x="302" y="252" text-anchor="middle" fill="#64748b" font-size="8">list · get · create · update</text>
+  <text x="302" y="264" text-anchor="middle" fill="#64748b" font-size="8">timeline, responders, resolution</text>
+
+  <rect x="393" y="221" width="170" height="55" rx="4" fill="#1e293b"/>
+  <text x="478" y="237" text-anchor="middle" fill="#ec4899" font-size="9">SLOs (3)</text>
+  <text x="478" y="252" text-anchor="middle" fill="#64748b" font-size="8">list · get · forecast</text>
+  <text x="478" y="264" text-anchor="middle" fill="#64748b" font-size="8">burn rate, error budget</text>
+
+  <rect x="217" y="284" width="170" height="45" rx="4" fill="#1e293b"/>
+  <text x="302" y="300" text-anchor="middle" fill="#22d3ee" font-size="9">DASHBOARDS (3)</text>
+  <text x="302" y="315" text-anchor="middle" fill="#64748b" font-size="8">list · get · runbooks</text>
+
+  <rect x="393" y="284" width="170" height="45" rx="4" fill="#1e293b"/>
+  <text x="478" y="300" text-anchor="middle" fill="#94a3b8" font-size="9">SERVICES (2)</text>
+  <text x="478" y="315" text-anchor="middle" fill="#64748b" font-size="8">list · get (health + deps)</text>
+
+  <!-- Backends -->
+  <rect x="615" y="70" width="305" height="320" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="767" y="92" text-anchor="middle" fill="#94a3b8" font-size="10">BACKENDS</text>
+
+  <rect x="630" y="105" width="275" height="50" rx="6" fill="#334155" stroke="#632ca6"/>
+  <text x="767" y="125" text-anchor="middle" fill="#a78bfa" font-size="10" font-weight="bold">Datadog</text>
+  <text x="767" y="142" text-anchor="middle" fill="#64748b" font-size="8">DATADOG_API_KEY + DATADOG_APP_KEY — logs, metrics, traces, monitors</text>
+
+  <rect x="630" y="163" width="275" height="50" rx="6" fill="#334155" stroke="#f59e0b"/>
+  <text x="767" y="183" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="bold">Grafana Cloud</text>
+  <text x="767" y="200" text-anchor="middle" fill="#64748b" font-size="8">GRAFANA_URL + GRAFANA_API_TOKEN — Loki, Prometheus, Tempo</text>
+
+  <rect x="630" y="221" width="275" height="50" rx="6" fill="#334155" stroke="#1ce783"/>
+  <text x="767" y="241" text-anchor="middle" fill="#34d399" font-size="10" font-weight="bold">New Relic</text>
+  <text x="767" y="258" text-anchor="middle" fill="#64748b" font-size="8">NEWRELIC_API_KEY + NEWRELIC_ACCOUNT_ID — APM, logs, dashboards</text>
+
+  <rect x="630" y="279" width="275" height="50" rx="6" fill="#334155" stroke="#fb923c"/>
+  <text x="767" y="299" text-anchor="middle" fill="#fb923c" font-size="10" font-weight="bold">Custom API</text>
+  <text x="767" y="316" text-anchor="middle" fill="#64748b" font-size="8">OBSERVABILITY_API_URL — your own monitoring backend</text>
+
+  <text x="480" y="445" text-anchor="middle" fill="#475569" font-size="10">mcp-observability v1.0.0 · 28 tools · Logs + Metrics + Traces + Alerts + Incidents + SLOs · No data stored</text>
+</svg>
