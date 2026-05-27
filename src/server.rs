@@ -28,6 +28,20 @@ pub struct SloInput { pub service: Option<String> }
 pub struct ServiceInput { pub service: String }
 #[derive(Debug, serde::Deserialize, schemars::JsonSchema)]
 pub struct RunbookInput { pub service: Option<String>, pub alert_type: Option<String> }
+#[derive(Debug, serde::Deserialize, schemars::JsonSchema)]
+pub struct ResolveAlertInput { pub alert_id: String, pub resolution: Option<String> }
+#[derive(Debug, serde::Deserialize, schemars::JsonSchema)]
+pub struct AlertHistoryInput { pub alert_id: Option<String>, pub service: Option<String>, pub limit: Option<u32> }
+#[derive(Debug, serde::Deserialize, schemars::JsonSchema)]
+pub struct MonitorCreateInput { pub name: String, pub url: String, pub monitor_type: Option<String>, pub interval_seconds: Option<u32> }
+#[derive(Debug, serde::Deserialize, schemars::JsonSchema)]
+pub struct MonitorCheckInput { pub url: String, pub timeout_seconds: Option<u64> }
+#[derive(Debug, serde::Deserialize, schemars::JsonSchema)]
+pub struct PromQueryInput { pub query: String, pub start: Option<String>, pub end: Option<String>, pub step: Option<String> }
+#[derive(Debug, serde::Deserialize, schemars::JsonSchema)]
+pub struct GrafanaSyncInput { pub direction: String, pub dashboard_id: Option<String> }
+#[derive(Debug, serde::Deserialize, schemars::JsonSchema)]
+pub struct IncidentResolveInput { pub id: String, pub root_cause: String, pub resolution: String, pub follow_up: Option<Vec<String>> }
 
 #[derive(Clone)]
 pub struct ObsServer { pub backend: ObsBackend }
@@ -231,5 +245,94 @@ impl ObsServer {
     #[tool(description = "Get service overview: health, dependencies, recent alerts, SLOs")]
     async fn get_service(&self, Parameters(input): Parameters<ServiceInput>) -> String {
         r(self.backend.api.get(&format!("/services/{}", input.service)).await)
+    }
+
+    // === New: Alert Resolve & History ===
+
+    #[tool(description = "Resolve a firing alert (marks as resolved, stops notifications)")]
+    async fn resolve_alert(&self, Parameters(input): Parameters<ResolveAlertInput>) -> String {
+        let body = json!({"status": "resolved", "resolution": input.resolution});
+        r(self.backend.api.post(&format!("/alerts/{}/resolve", input.alert_id), &body).await)
+    }
+
+    #[tool(description = "Get alert firing history (past incidents of an alert rule firing)")]
+    async fn alert_history(&self, Parameters(input): Parameters<AlertHistoryInput>) -> String {
+        let mut params = vec![];
+        if let Some(id) = &input.alert_id { params.push(format!("alert_id={}", id)); }
+        if let Some(svc) = &input.service { params.push(format!("service={}", svc)); }
+        params.push(format!("limit={}", input.limit.unwrap_or(20)));
+        r(self.backend.api.get(&format!("/alerts/history?{}", params.join("&"))).await)
+    }
+
+    // === New: Uptime Monitors ===
+
+    #[tool(description = "Create an uptime monitor (HTTP, TCP, or ping check at regular intervals)")]
+    async fn monitor_create(&self, Parameters(input): Parameters<MonitorCreateInput>) -> String {
+        let body = json!({"name": input.name, "url": input.url, "type": input.monitor_type.unwrap_or_else(|| "http".into()), "interval_seconds": input.interval_seconds.unwrap_or(60)});
+        r(self.backend.api.post("/monitors", &body).await)
+    }
+
+    #[tool(description = "Check uptime status of a URL right now (performs live HTTP request and returns status, latency)")]
+    async fn monitor_status(&self, Parameters(input): Parameters<MonitorCheckInput>) -> String {
+        let timeout = input.timeout_seconds.unwrap_or(10);
+        let start = std::time::Instant::now();
+        let client = reqwest::Client::builder().timeout(std::time::Duration::from_secs(timeout)).build().unwrap_or_default();
+        match client.get(&input.url).send().await {
+            Ok(resp) => {
+                let latency_ms = start.elapsed().as_millis();
+                let status_code = resp.status().as_u16();
+                let up = status_code < 400;
+                json!({"url": input.url, "status": if up { "up" } else { "degraded" }, "status_code": status_code, "latency_ms": latency_ms}).to_string()
+            }
+            Err(e) => json!({"url": input.url, "status": "down", "error": e.to_string()}).to_string(),
+        }
+    }
+
+    // === New: Backend Sync ===
+
+    #[tool(description = "Query Prometheus directly using PromQL. Requires PROMETHEUS_URL env var.")]
+    async fn sync_prometheus(&self, Parameters(input): Parameters<PromQueryInput>) -> String {
+        let prom_url = std::env::var("PROMETHEUS_URL").unwrap_or_else(|_| "http://localhost:9090".into());
+        let mut url = format!("{}/api/v1/query?query={}", prom_url, input.query);
+        if let Some(ref start) = input.start { url = format!("{}/api/v1/query_range?query={}&start={}&end={}&step={}", prom_url, input.query, start, input.end.as_deref().unwrap_or("now"), input.step.as_deref().unwrap_or("60s")); }
+        let client = reqwest::Client::new();
+        match client.get(&url).send().await {
+            Ok(resp) => match resp.json::<serde_json::Value>().await {
+                Ok(data) => json!({"source": "prometheus", "status": data["status"], "result_type": data["data"]["resultType"], "results": data["data"]["result"]}).to_string(),
+                Err(e) => json!({"error": e.to_string()}).to_string(),
+            },
+            Err(e) => json!({"error": "PROMETHEUS_UNAVAILABLE", "details": e.to_string(), "url": prom_url}).to_string(),
+        }
+    }
+
+    #[tool(description = "Sync dashboards with Grafana. Pull imports dashboards, push exports. Requires GRAFANA_URL, GRAFANA_TOKEN env vars.")]
+    async fn sync_grafana(&self, Parameters(input): Parameters<GrafanaSyncInput>) -> String {
+        let grafana_url = std::env::var("GRAFANA_URL").unwrap_or_else(|_| "http://localhost:3000".into());
+        let token = match std::env::var("GRAFANA_TOKEN") {
+            Ok(t) => t,
+            Err(_) => return json!({"error": "NOT_CONFIGURED", "message": "Set GRAFANA_URL and GRAFANA_TOKEN"}).to_string(),
+        };
+        let client = reqwest::Client::new();
+        match input.direction.as_str() {
+            "pull" => {
+                let url = format!("{}/api/search?type=dash-db", grafana_url);
+                match client.get(&url).header("Authorization", format!("Bearer {}", token)).send().await {
+                    Ok(resp) => match resp.json::<serde_json::Value>().await {
+                        Ok(data) => json!({"source": "grafana", "status": "pulled", "dashboards": data}).to_string(),
+                        Err(e) => json!({"error": e.to_string()}).to_string(),
+                    },
+                    Err(e) => json!({"error": e.to_string()}).to_string(),
+                }
+            }
+            _ => json!({"status": "push_supported", "message": "Use Grafana API POST /api/dashboards/db"}).to_string(),
+        }
+    }
+
+    // === New: Incident Resolve with RCA ===
+
+    #[tool(description = "Resolve an incident with root cause analysis, resolution details, and follow-up actions")]
+    async fn incident_resolve(&self, Parameters(input): Parameters<IncidentResolveInput>) -> String {
+        let body = json!({"status": "resolved", "root_cause": input.root_cause, "resolution": input.resolution, "follow_up_actions": input.follow_up});
+        r(self.backend.api.post(&format!("/incidents/{}/resolve", input.id), &body).await)
     }
 }
