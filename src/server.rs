@@ -50,7 +50,7 @@ fn r(result: Result<serde_json::Value, anyhow::Error>) -> String {
     match result { Ok(v) => serde_json::to_string_pretty(&v).unwrap(), Err(e) => format!("Error: {}", e) }
 }
 
-#[tool_router(server_handler)]
+#[tool_router]
 impl ObsServer {
     // === Logs (4) ===
 
@@ -335,4 +335,11 @@ impl ObsServer {
         let body = json!({"status": "resolved", "root_cause": input.root_cause, "resolution": input.resolution, "follow_up_actions": input.follow_up});
         r(self.backend.api.post(&format!("/incidents/{}/resolve", input.id), &body).await)
     }
+}
+
+adk_mcp_sdk::mcp_2026_server! {
+    server: ObsServer,
+    task_tools: ["forecast_slo", "sync_prometheus", "sync_grafana"],
+    approval_tools: [],
+    cache_ttl_ms: 60_000,
 }

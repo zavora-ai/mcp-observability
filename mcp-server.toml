@@ -1,0 +1,256 @@
+server_id = "mcp_observability"
+display_name = "Observability"
+version = "1.2.0"
+domain = "observability"
+sdk_version = "0.2.0"
+risk_level = "medium"
+writes_allowed = "gated"
+transports = ["stdio"]
+credentials = []
+governance_gates = []
+environments = ["development", "staging", "production"]
+
+[[tools]]
+name = "query_logs"
+description = "Search logs by query, time range, service, and level (error/warn/info/debug)"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_log_stats"
+description = "Get log volume and error rate over time for a service"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_errors"
+description = "Get recent error logs with stack traces"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "tail_logs"
+description = "Tail live logs for a service (last N entries)"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "query_metric"
+description = "Query a metric over time (CPU, memory, latency, error_rate, throughput)"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "list_metrics"
+description = "List available metrics for a service"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_system_health"
+description = "Get current system health: CPU, memory, disk, network across services"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "compare_metrics"
+description = "Compare a metric across services or time periods"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "search_traces"
+description = "Search distributed traces by service, operation, duration, or status"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_trace"
+description = "Get a full trace with all spans, timings, and errors"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_service_map"
+description = "Get service map showing dependencies and latencies"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_latency_breakdown"
+description = "Find slow endpoints: p50, p95, p99 latencies by operation"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "list_alerts"
+description = "List active alerts filtered by status (firing/resolved), severity, service"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_alert"
+description = "Get alert details with history and related metrics"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "create_alert"
+description = "Create a new alert rule (metric threshold, anomaly detection)"
+risk_class = "internal_write"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "acknowledge_alert"
+description = "Acknowledge a firing alert with optional message"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "list_incidents"
+description = "List incidents (open, investigating, resolved)"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_incident"
+description = "Get incident details: timeline, affected services, responders"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "create_incident"
+description = "Create a new incident"
+risk_class = "internal_write"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "update_incident"
+description = "Update incident status or add resolution notes"
+risk_class = "internal_write"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "list_slos"
+description = "List SLOs with current burn rate and error budget remaining"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_slo"
+description = "Get SLO details: target, current value, burn rate, budget"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "forecast_slo"
+description = "Get SLO breach forecast — when will error budget run out?"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "list_dashboards"
+description = "List observability dashboards"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_dashboard"
+description = "Get dashboard with all panels and current values"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_runbook"
+description = "Find relevant runbook for an alert or service issue"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "list_services"
+description = "List all monitored services with health status"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_service"
+description = "Get service overview: health, dependencies, recent alerts, SLOs"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "resolve_alert"
+description = "Resolve a firing alert (marks as resolved, stops notifications)"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "alert_history"
+description = "Get alert firing history (past incidents of an alert rule firing)"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "monitor_create"
+description = "Create an uptime monitor (HTTP, TCP, or ping check at regular intervals)"
+risk_class = "internal_write"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "monitor_status"
+description = "Check uptime status of a URL right now (performs live HTTP request and returns status, latency)"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "sync_prometheus"
+description = "Query Prometheus directly using PromQL. Requires PROMETHEUS_URL env var."
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "sync_grafana"
+description = "Sync dashboards with Grafana. Pull imports dashboards, push exports. Requires GRAFANA_URL, GRAFANA_TOKEN env vars."
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "incident_resolve"
+description = "Resolve an incident with root cause analysis, resolution details, and follow-up actions"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
