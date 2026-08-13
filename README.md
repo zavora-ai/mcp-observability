@@ -149,7 +149,7 @@ cargo install mcp-observability
 ```toml
 server_id = "mcp_observability"
 display_name = "Observability"
-version = "1.0.0"
+version = "1.2.0"
 domain = "infrastructure"
 risk_level = "low"
 writes_allowed = "gated"
